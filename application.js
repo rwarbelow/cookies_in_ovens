@@ -57,22 +57,34 @@ var prepTableView = {
   }
 };
 
+var transferCookies = function() {
+  var batchNumber = $(this).parent().index();
+  var cookie = $(this).parent();
+  alert("Cookies are in the oven!");
+  $(cookie).remove();
+  removedCookie = prepTable.contents.splice(batchNumber,1);
+  prepTable.cookieToOven(removedCookie[0], oven);
+  var ovenPosition = ((oven.contents.length)-1);
+  $('#rack_' + ovenPosition.toString()).html('<span id="cookie_name">' + oven.contents[ovenPosition].recipe + '</span>' + ' <span class="cookie_state">' + '[' + oven.contents[ovenPosition].state + ']');
+  $('#rack_' + ovenPosition.toString()).css('background', 'red');
+  $('.cookie_state').css('font-style', 'italic');
+  }
+
+var transferCookieView = {
+  initialize: function (){
+    $('#prep_batches').on('submit', 'form', function(e){
+    e.preventDefault();
+    transferCookies();
+  });
+  }
+}
+
+
 $(document).ready(function(){
   prepTableView.initialize();
+  transferCookieView.initialize();
   // ----------
-  $('#prep_batches').on('submit', 'form', function(e){
-    e.preventDefault();
-    var batchNumber = $(this).parent().index();
-    var cookie = $(this).parent();
-    alert("Cookies are in the oven!");
-    $(cookie).remove();
-    removedCookie = prepTable.contents.splice(batchNumber,1);
-    prepTable.cookieToOven(removedCookie[0], oven);
-    var ovenPosition = ((oven.contents.length)-1);
-    $('#rack_' + ovenPosition.toString()).html('<span id="cookie_name">' + oven.contents[ovenPosition].recipe + '</span>' + ' <span class="cookie_state">' + '[' + oven.contents[ovenPosition].state + ']');
-    $('#rack_' + ovenPosition.toString()).css('background', 'red');
-    $('.cookie_state').css('font-style', 'italic');
-  });
+  
   // -----------
   $('#bake').on('click', function(e){
     oven.bake();

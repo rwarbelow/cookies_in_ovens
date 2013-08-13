@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="application.js"></script>
+    <link href="application.css" type="text/css" rel="stylesheet"></link>
+  </head>
+
+
+  <body>
+
+<div class="row">
+  <div class="span6">
+    <h2>Prep Table</h2>
+    <ul id="prep_batches">
+    </ul>
+    <form id="new_batch" name="new_batch">
+      <label>Cookie type:</label>
+      <input name="batch_type" type="text" placeholder="e.g. 'oatmeal raisin'" value="chocolate chip"/>
+      <br />
+
+      <label for="bake_time">Bake time:</label>
+      <input name="bake_time" type="number" min="0" max="20" />
+      <br />
+
+      <input type="submit" value="Make Batch"/>
+    </form>
+  </div>
+
+  <div class="span6">
+    <h2>Oven</h2>
+    <table id="oven">
+      <tr>
+        <td id="rack_0">[empty0]</td>
+      </tr>
+      <tr>
+        <td id="rack_1">[empty1]</td>
+      </tr>
+      <tr>
+        <td id="rack_2">[empty2]</td>
+      </tr>
+    </table>
+
+    <button id="bake">Bake for 1 minute</button>
+  </div>
+</div>
+
+</body>
+
+</html>

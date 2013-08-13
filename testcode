@@ -1,0 +1,12 @@
+var pb = new Cookie("pb", 5);
+var cc = new Cookie("cc", 5);
+var oven = new Oven;
+var rachel = new Baker;
+
+
+$('#new_batch').on('submit', function(e){
+  e.preventDefault();
+  var cookieInfo = $('form').serializeArray();
+  var cookie = new Cookie(cookieInfo[0].value, cookieInfo[1].value);
+  $('#prep_batches').append('<li>' + cookie.type + '<form><input type="submit" value="Add to oven"></form>' + '</li>');
+});

@@ -39,7 +39,7 @@ var prepTable = new PrepTable();
 var oven = new Oven();
 
 
-var prepCookie = function() {
+var prepCookie = function( ) {
   var cookieInfo = $('form').serializeArray();
   var cookieType = cookieInfo[0].value;
   var cookieBakeTime = cookieInfo[1].value;
@@ -48,14 +48,6 @@ var prepCookie = function() {
   $('#prep_batches').append('<li>' + cookie.recipe + '<form><input type="submit" value="Add to oven"></form>' + '</li>');
 };
 
-var prepTableView = {
-  initialize: function(){
-    $('#new_batch').on('submit', function(e) {
-      e.preventDefault();
-      prepCookie();
-    });
-  }
-};
 
 var transferCookies = function() {
   var batchNumber = $(this).parent().index();
@@ -68,41 +60,60 @@ var transferCookies = function() {
   $('#rack_' + ovenPosition.toString()).html('<span id="cookie_name">' + oven.contents[ovenPosition].recipe + '</span>' + ' <span class="cookie_state">' + '[' + oven.contents[ovenPosition].state + ']');
   $('#rack_' + ovenPosition.toString()).css('background', 'red');
   $('.cookie_state').css('font-style', 'italic');
+};
+
+var cssUpdateStatus = function(cookieState, ovenPosition){
+  switch (cookieState){
+    case "gooey": $('#rack_' + ovenPosition.toString()).css('background', 'yellow');
+    break;
+    case "just right": $('#rack_' + ovenPosition.toString()).css('background', 'green');
+    break;
+    case "crispy": $('#rack_' + ovenPosition.toString()).css('background', 'black').css('color', 'white');
+    break;
   }
+}
+
+var ovenUpdate = function() {
+  oven.bake();
+  for (var i = 0; i < oven.contents.length; i++){
+    var ovenPosition = i;
+    var cookieState = oven.contents[ovenPosition].state;
+    $('#rack_' + ovenPosition.toString()).html('<span id="cookie_name">' + oven.contents[ovenPosition].recipe + '</span>' + ' <span class="cookie_state">' + '[' + oven.contents[ovenPosition].state + ']');
+    cssUpdateStatus(cookieState, ovenPosition);
+  }
+};
+
+var prepTableView = {
+  initialize: function(){
+    $('#new_batch').on('submit', function(e) {
+      e.preventDefault();
+      prepCookie();
+    });
+  }
+};
 
 var transferCookieView = {
   initialize: function (){
     $('#prep_batches').on('submit', 'form', function(e){
     e.preventDefault();
     transferCookies();
-  });
+    });
   }
-}
+};
 
+var ovenView = {
+  initialize: function() {
+    $('#bake').on('click', function(e){
+      e.preventDefault();
+      ovenUpdate();
+    });
+  }
+};
 
 $(document).ready(function(){
   prepTableView.initialize();
   transferCookieView.initialize();
-  // ----------
-  
-  // -----------
-  $('#bake').on('click', function(e){
-    oven.bake();
-    for (var i = 0; i < oven.contents.length; i++){
-      var ovenPosition = i;
-      var cookieState = oven.contents[ovenPosition].state;
-      $('#rack_' + ovenPosition.toString()).html('<span id="cookie_name">' + oven.contents[ovenPosition].recipe + '</span>' + ' <span class="cookie_state">' + '[' + oven.contents[ovenPosition].state + ']');
-
-      switch (cookieState){
-        case "gooey": $('#rack_' + ovenPosition.toString()).css('background', 'yellow');
-        break;
-        case "just right": $('#rack_' + ovenPosition.toString()).css('background', 'green');
-        break;
-        case "crispy": $('#rack_' + ovenPosition.toString()).css('background', 'black').css('color', 'white');
-        break;
-      }
-    }
-  });
+  ovenView.initialize();
 });
 
 

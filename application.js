@@ -10,15 +10,6 @@ function Oven() {
   this.contents = [];
 }
 
-function PrepTable() {
-  this.owner = "prepTable";
-  this.contents = [];
-}
-
-PrepTable.prototype.cookieToOven = function(cookie, oven) {
-  oven.contents.push(cookie);
-};
-
 Oven.prototype.bake = function() {
   for (var i = 0; i < oven.contents.length; i++) {
     var cookie = oven.contents[i];
@@ -35,9 +26,18 @@ Oven.prototype.bake = function() {
   }
 };
 
-var prepTable = new PrepTable();
-var oven = new Oven();
+function PrepTable() {
+  this.owner = "prepTable";
+  this.contents = [];
+}
 
+PrepTable.prototype.cookieToOven = function(cookie, oven) {
+  oven.contents.push(cookie);
+};
+
+var prepTable = new PrepTable();
+
+var oven = new Oven();
 
 var prepCookie = function( ) {
   var cookieInfo = $('form').serializeArray();
@@ -47,7 +47,6 @@ var prepCookie = function( ) {
   prepTable.contents.push(cookie);
   $('#prep_batches').append('<li>' + cookie.recipe + '<form><input type="submit" value="Add to oven"></form>' + '</li>');
 };
-
 
 var transferCookies = function() {
   var batchNumber = $(this).parent().index();
@@ -62,6 +61,16 @@ var transferCookies = function() {
   $('.cookie_state').css('font-style', 'italic');
 };
 
+var ovenUpdate = function() {
+  oven.bake();
+  for (var i = 0; i < oven.contents.length; i++){
+    var ovenPosition = i;
+    var cookieState = oven.contents[ovenPosition].state;
+    $('#rack_' + ovenPosition.toString()).html('<span id="cookie_name">' + oven.contents[ovenPosition].recipe + '</span>' + ' <span class="cookie_state">' + '[' + oven.contents[ovenPosition].state + ']');
+    cssUpdateStatus(cookieState, ovenPosition);
+  }
+};
+
 var cssUpdateStatus = function(cookieState, ovenPosition){
   switch (cookieState){
     case "gooey": $('#rack_' + ovenPosition.toString()).css('background', 'yellow');
@@ -72,16 +81,6 @@ var cssUpdateStatus = function(cookieState, ovenPosition){
     break;
   }
 }
-
-var ovenUpdate = function() {
-  oven.bake();
-  for (var i = 0; i < oven.contents.length; i++){
-    var ovenPosition = i;
-    var cookieState = oven.contents[ovenPosition].state;
-    $('#rack_' + ovenPosition.toString()).html('<span id="cookie_name">' + oven.contents[ovenPosition].recipe + '</span>' + ' <span class="cookie_state">' + '[' + oven.contents[ovenPosition].state + ']');
-    cssUpdateStatus(cookieState, ovenPosition);
-  }
-};
 
 var prepTableView = {
   initialize: function(){
